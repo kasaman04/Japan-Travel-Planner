@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japan Travel Planner - 外国人向け旅行プランナー</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🗾 Japan Travel Planner</h1>
+            <p>外国人向け日本旅行プランナー</p>
+        </header>
+
+        <main>
+            <div class="step-indicator">
+                <div class="step active">1. 地域選択</div>
+                <div class="step">2. 条件設定</div>
+                <div class="step">3. 店舗検索</div>
+                <div class="step">4. ルート作成</div>
+                <div class="step">5. PDF出力</div>
+            </div>
+
+            <section class="form-section">
+                <h2>地域を選択してください</h2>
+                <div class="form-group">
+                    <label for="prefecture">都道府県 (Prefecture)</label>
+                    <select id="prefecture" name="prefecture">
+                        <option value="">選択してください</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="city">市区町村 (City)</label>
+                    <select id="city" name="city" disabled>
+                        <option value="">都道府県を選択してください</option>
+                    </select>
+                </div>
+
+                <h2>やりたいことを選択してください</h2>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" value="restaurant"> 🍜 食事 (Dining)</label>
+                    <label><input type="checkbox" value="tourist_attraction"> 🏯 観光 (Sightseeing)</label>
+                    <label><input type="checkbox" value="amusement_park"> 🎢 体験・アクティビティ (Activities)</label>
+                    <label><input type="checkbox" value="shopping_mall"> 🛍️ ショッピング (Shopping)</label>
+                    <label><input type="checkbox" value="spa"> ♨️ 温泉・リラクゼーション (Hot Springs)</label>
+                    <label><input type="checkbox" value="night_club"> 🍻 ナイトライフ (Nightlife)</label>
+                </div>
+
+                <h2>予算設定</h2>
+                <div class="form-group">
+                    <label for="budget">1日の予算 (Daily Budget) - 円</label>
+                    <input type="number" id="budget" name="budget" min="1000" max="100000" step="1000" placeholder="例: 10000">
+                </div>
+
+                <h2>移動手段</h2>
+                <div class="radio-group">
+                    <label><input type="radio" name="transport" value="walking"> 🚶 徒歩 (Walking) - 5km圏内</label>
+                    <label><input type="radio" name="transport" value="driving"> 🚗 車 (Car) - 10km圏内</label>
+                    <label><input type="radio" name="transport" value="transit"> 🚃 公共交通機関 (Public Transport) - 20km圏内</label>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" id="searchBtn" class="btn-primary">検索開始 (Start Search)</button>
+                    <button type="button" id="resetBtn" class="btn-secondary">リセット (Reset)</button>
+                </div>
+            </section>
+
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <h2>検索結果</h2>
+                <div id="mapContainer">
+                    <div id="map"></div>
+                </div>
+                <div id="placesList"></div>
+            </section>
+
+            <section class="route-section" id="routeSection" style="display: none;">
+                <h2>選択した場所でルートを作成</h2>
+                <div id="selectedPlaces"></div>
+                <button type="button" id="createRouteBtn" class="btn-primary">ルート作成 (Create Route)</button>
+            </section>
+
+            <section class="export-section" id="exportSection" style="display: none;">
+                <h2>旅行プランをPDFで保存</h2>
+                <button type="button" id="exportPdfBtn" class="btn-primary">PDF出力 (Export PDF)</button>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Japan Travel Planner</p>
+        </footer>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="regions.js"></script>
+    <script src="maps.js"></script>
+    <script src="script.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCU2wcmIsUx0D4Ue9SMnNqE4fRESbZ0iA8&libraries=places&callback=initializeGoogleMaps"></script>
+</body>
+</html>
