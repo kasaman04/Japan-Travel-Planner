@@ -2,8 +2,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Japan Travel Planner initialized');
     
-    // 都道府県データを読み込み
-    loadPrefectures();
+    // 地域データを読み込み
+    loadRegions();
     
     // 基本的なイベントリスナーを設定
     setupEventListeners();
@@ -63,10 +63,26 @@ function setupEventListeners() {
 }
 
 function setupFormValidation() {
-    // 都道府県選択の変更時に市区町村を有効化
+    // 地域選択の変更時に都道府県を有効化
+    const regionSelect = document.getElementById('region');
     const prefectureSelect = document.getElementById('prefecture');
     const citySelect = document.getElementById('city');
     
+    if (regionSelect && prefectureSelect) {
+        regionSelect.addEventListener('change', function() {
+            if (this.value) {
+                loadPrefecturesFromRegion(this.value);
+                console.log('地域が選択されました:', this.value);
+            } else {
+                prefectureSelect.disabled = true;
+                prefectureSelect.innerHTML = '<option value="">地域を選択してください</option>';
+                citySelect.disabled = true;
+                citySelect.innerHTML = '<option value="">都道府県を選択してください</option>';
+            }
+        });
+    }
+    
+    // 都道府県選択の変更時に市区町村を有効化
     if (prefectureSelect && citySelect) {
         prefectureSelect.addEventListener('change', function() {
             if (this.value) {
@@ -115,8 +131,15 @@ function resetForm() {
         }
     });
     
-    // 市区町村選択を無効化
+    // 都道府県と市区町村選択を無効化
+    const prefectureSelect = document.getElementById('prefecture');
     const citySelect = document.getElementById('city');
+    
+    if (prefectureSelect) {
+        prefectureSelect.disabled = true;
+        prefectureSelect.innerHTML = '<option value="">地域を選択してください</option>';
+    }
+    
     if (citySelect) {
         citySelect.disabled = true;
         citySelect.innerHTML = '<option value="">都道府県を選択してください</option>';
@@ -143,36 +166,76 @@ function resetForm() {
     console.log('フォームがリセットされました');
 }
 
-// 都道府県データを読み込む関数
-function loadPrefectures() {
-    const prefectureSelect = document.getElementById('prefecture');
-    if (!prefectureSelect || !regionsData) return;
+// 地域データを読み込む関数
+function loadRegions() {
+    const regionSelect = document.getElementById('region');
+    if (!regionSelect || !regionsData) return;
     
     // 既存のオプションをクリア（デフォルトオプション以外）
-    prefectureSelect.innerHTML = '<option value="">選択してください</option>';
+    regionSelect.innerHTML = '<option value="">選択してください</option>';
     
-    // 都道府県を追加
-    Object.keys(regionsData).forEach(prefecture => {
+    // 地域を追加
+    Object.keys(regionsData).forEach(regionKey => {
+        const region = regionsData[regionKey];
+        const option = document.createElement('option');
+        option.value = regionKey;
+        option.textContent = `${region.name_ja} (${region.name_en})`;
+        regionSelect.appendChild(option);
+    });
+    
+    console.log('地域データが読み込まれました');
+}
+
+// 選択された地域から都道府県を読み込む関数
+function loadPrefecturesFromRegion(selectedRegion) {
+    const prefectureSelect = document.getElementById('prefecture');
+    const citySelect = document.getElementById('city');
+    
+    if (!prefectureSelect || !regionsData[selectedRegion]) return;
+    
+    // 都道府県選択を有効化
+    prefectureSelect.disabled = false;
+    prefectureSelect.innerHTML = '<option value="">都道府県を選択してください</option>';
+    
+    // 市区町村選択を無効化
+    citySelect.disabled = true;
+    citySelect.innerHTML = '<option value="">都道府県を選択してください</option>';
+    
+    // 選択された地域の都道府県を追加
+    const prefectures = regionsData[selectedRegion].prefectures;
+    Object.keys(prefectures).forEach(prefecture => {
         const option = document.createElement('option');
         option.value = prefecture;
-        option.textContent = `${prefecture} (${regionsData[prefecture].name_en})`;
+        option.textContent = `${prefecture} (${prefectures[prefecture].name_en})`;
         prefectureSelect.appendChild(option);
     });
     
-    console.log('都道府県データが読み込まれました');
+    console.log(`${selectedRegion}の都道府県データが読み込まれました:`, Object.keys(prefectures).length + '件');
 }
 
 // 市区町村データを読み込む関数
 function loadCities(selectedPrefecture) {
     const citySelect = document.getElementById('city');
-    if (!citySelect || !regionsData[selectedPrefecture]) return;
+    if (!citySelect) return;
+    
+    // 選択された都道府県のデータを探す
+    let prefectureData = null;
+    for (const regionKey in regionsData) {
+        const region = regionsData[regionKey];
+        if (region.prefectures && region.prefectures[selectedPrefecture]) {
+            prefectureData = region.prefectures[selectedPrefecture];
+            break;
+        }
+    }
+    
+    if (!prefectureData) return;
     
     // 市区町村選択を有効化
     citySelect.disabled = false;
     citySelect.innerHTML = '<option value="">市区町村を選択してください</option>';
     
     // 選択された都道府県の市区町村を追加
-    const cities = regionsData[selectedPrefecture].cities;
+    const cities = prefectureData.cities;
     cities.forEach(city => {
         const option = document.createElement('option');
         option.value = city;
@@ -185,6 +248,7 @@ function loadCities(selectedPrefecture) {
 
 // フォーム入力値を取得する関数
 function getFormData() {
+    const region = document.getElementById('region').value;
     const prefecture = document.getElementById('prefecture').value;
     const city = document.getElementById('city').value;
     const budget = document.getElementById('budget').value;
@@ -199,6 +263,7 @@ function getFormData() {
     const transport = document.querySelector('.radio-group input[type="radio"]:checked')?.value;
     
     return {
+        region,
         prefecture,
         city,
         budget: parseInt(budget) || 0,
@@ -211,6 +276,10 @@ function getFormData() {
 function validateForm() {
     const formData = getFormData();
     const errors = [];
+    
+    if (!formData.region) {
+        errors.push('地域を選択してください');
+    }
     
     if (!formData.prefecture) {
         errors.push('都道府県を選択してください');
@@ -320,6 +389,7 @@ function generateTravelPlanText(formData, planData) {
     
     // 基本情報
     content += '【基本情報 / Basic Information】\n';
+    content += `地域 / Region: ${getRegionDisplayName(formData.region)}\n`;
     content += `場所 / Location: ${formData.prefecture} ${formData.city}\n`;
     content += `予算 / Budget: ${formData.budget} 円/日 (yen per day)\n`;
     content += `移動手段 / Transport: ${getTransportText(formData.transport)}\n`;
@@ -396,4 +466,11 @@ function getActivitiesText(activities) {
     };
     
     return activities.map(activity => activityMap[activity] || activity).join(', ');
+}
+
+// 地域表示名を取得
+function getRegionDisplayName(regionKey) {
+    if (!regionKey || !regionsData[regionKey]) return regionKey || 'Not specified';
+    const region = regionsData[regionKey];
+    return `${region.name_ja} (${region.name_en})`;
 }

@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>🗾 Japan Travel Planner</h1>
+            <h1><img src="Image/header.png" alt="Japan Travel Planner Logo" style="width: 60px; height: 60px; vertical-align: middle; margin-right: 15px;">Japan Travel Planner</h1>
             <p>外国人向け日本旅行プランナー</p>
         </header>
 
@@ -25,9 +25,16 @@
             <section class="form-section">
                 <h2>地域を選択してください</h2>
                 <div class="form-group">
-                    <label for="prefecture">都道府県 (Prefecture)</label>
-                    <select id="prefecture" name="prefecture">
+                    <label for="region">地域 (Region)</label>
+                    <select id="region" name="region">
                         <option value="">選択してください</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="prefecture">都道府県 (Prefecture)</label>
+                    <select id="prefecture" name="prefecture" disabled>
+                        <option value="">地域を選択してください</option>
                     </select>
                 </div>
 
