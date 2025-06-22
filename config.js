@@ -2,7 +2,7 @@
 // 注意: 実際の運用時は環境変数や安全な方法でAPIキーを管理してください
 const CONFIG = {
     // あなたのGoogle Maps APIキーをここに入力してください
-    GOOGLE_MAPS_API_KEY: 'AIzaSyCU2wcmIsUx0D4Ue9SMnNqE4fRESbZ0iA8',
+    GOOGLE_MAPS_API_KEY: 'AIzaSyA80IAlN1T4X418R1-k0zvjeU1w3q2RDTY',
     
     // デフォルト設定
     DEFAULT_CENTER: {

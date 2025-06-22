@@ -48,8 +48,7 @@ function setupEventListeners() {
     if (createRouteBtn) {
         createRouteBtn.addEventListener('click', function() {
             console.log('ルート作成ボタンがクリックされました');
-            // 次の段階で実装予定
-            alert('ルート作成機能は後の段階で実装予定です');
+            createRoute();
         });
     }
     
@@ -58,8 +57,7 @@ function setupEventListeners() {
     if (exportPdfBtn) {
         exportPdfBtn.addEventListener('click', function() {
             console.log('PDF出力ボタンがクリックされました');
-            // 次の段階で実装予定
-            alert('PDF出力機能は最後の段階で実装予定です');
+            exportTravelPlanToPDF();
         });
     }
 }
@@ -235,4 +233,167 @@ function validateForm() {
     }
     
     return errors;
+}
+
+// プラン出力機能（テキストファイル）
+function exportTravelPlanToPDF() {
+    console.log('旅行プラン出力を開始します');
+    
+    try {
+        // 選択されたプランの情報を取得
+        const formData = getFormData();
+        const planData = getTravelPlanData();
+        
+        if (!planData.places || planData.places.length === 0) {
+            alert('プラン出力するには、まず店舗を選択してルートを作成してください');
+            return;
+        }
+        
+        // テキストファイルを生成
+        generateTravelPlanText(formData, planData);
+        
+    } catch (error) {
+        console.error('プラン出力エラー:', error);
+        alert('プラン出力中にエラーが発生しました: ' + error.message);
+    }
+}
+
+// 旅行プランデータを取得
+function getTravelPlanData() {
+    const planData = {
+        places: selectedPlaces || [],
+        routeInfo: getRouteInfo()
+    };
+    
+    console.log('旅行プランデータ:', planData);
+    return planData;
+}
+
+// ルート情報を取得
+function getRouteInfo() {
+    // DirectionsRendererから現在のルート情報を取得
+    if (typeof directionsRenderer !== 'undefined' && directionsRenderer) {
+        const directions = directionsRenderer.getDirections();
+        if (directions && directions.routes && directions.routes.length > 0) {
+            const route = directions.routes[0];
+            
+            // 合計距離と時間を計算
+            let totalDistance = 0;
+            let totalDuration = 0;
+            
+            route.legs.forEach(leg => {
+                totalDistance += leg.distance.value;
+                totalDuration += leg.duration.value;
+            });
+            
+            return {
+                totalDistance: (totalDistance / 1000).toFixed(1) + ' km',
+                totalDuration: formatDuration(totalDuration),
+                hasRoute: true
+            };
+        }
+    }
+    
+    return {
+        totalDistance: '未計算',
+        totalDuration: '未計算',
+        hasRoute: false
+    };
+}
+
+// 時間をフォーマット
+function formatDuration(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    return hours > 0 ? `${hours}時間${minutes}分` : `${minutes}分`;
+}
+
+// テキストファイル生成メイン関数
+function generateTravelPlanText(formData, planData) {
+    // テキスト内容を作成
+    let content = '';
+    
+    // タイトル
+    content += '=====================================\n';
+    content += '    JAPAN TRAVEL PLAN\n';
+    content += '=====================================\n\n';
+    
+    // 基本情報
+    content += '【基本情報 / Basic Information】\n';
+    content += `場所 / Location: ${formData.prefecture} ${formData.city}\n`;
+    content += `予算 / Budget: ${formData.budget} 円/日 (yen per day)\n`;
+    content += `移動手段 / Transport: ${getTransportText(formData.transport)}\n`;
+    content += `アクティビティ / Activities: ${getActivitiesText(formData.activities)}\n\n`;
+    
+    // ルート情報
+    if (planData.routeInfo.hasRoute) {
+        content += '【ルート情報 / Route Information】\n';
+        content += `総距離 / Total Distance: ${planData.routeInfo.totalDistance}\n`;
+        content += `所要時間 / Total Time: ${planData.routeInfo.totalDuration}\n\n`;
+    }
+    
+    // 選択された場所のリスト
+    content += '【選択した場所 / Selected Places】\n';
+    planData.places.forEach((place, index) => {
+        content += `${index + 1}. ${place.name}\n`;
+    });
+    content += '\n';
+    
+    // 生成日時
+    const currentDate = new Date().toLocaleDateString('ja-JP');
+    const currentTime = new Date().toLocaleTimeString('ja-JP');
+    content += `生成日時 / Generated: ${currentDate} ${currentTime}\n`;
+    content += 'Created by Japan Travel Planner\n';
+    content += '=====================================\n';
+    
+    // ファイルをダウンロード
+    const fileName = `Japan_Travel_Plan_${formData.prefecture}_${currentDate.replace(/\//g, '-')}.txt`;
+    downloadTextFile(content, fileName);
+    
+    console.log('旅行プラン出力完了:', fileName);
+    alert('旅行プランのテキストファイルを保存しました！');
+}
+
+// テキストファイルダウンロード機能
+function downloadTextFile(content, fileName) {
+    // BOMを追加してUTF-8で正しく表示されるようにする
+    const bom = '\uFEFF';
+    const blob = new Blob([bom + content], { type: 'text/plain;charset=utf-8' });
+    
+    // ダウンロードリンクを作成
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    
+    // 一時的にページに追加してクリック
+    document.body.appendChild(link);
+    link.click();
+    
+    // リンクを削除
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+}
+
+// 移動手段テキストを取得
+function getTransportText(transport) {
+    switch(transport) {
+        case 'walking': return 'Walking';
+        case 'driving': return 'Driving';
+        case 'transit': return 'Public Transport';
+        default: return transport || 'Not specified';
+    }
+}
+
+// アクティビティテキストを取得
+function getActivitiesText(activities) {
+    const activityMap = {
+        'restaurant': 'Dining',
+        'tourist_attraction': 'Sightseeing',
+        'amusement_park': 'Activities',
+        'shopping_mall': 'Shopping',
+        'spa': 'Hot Springs',
+        'night_club': 'Nightlife'
+    };
+    
+    return activities.map(activity => activityMap[activity] || activity).join(', ');
 }

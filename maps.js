@@ -2,6 +2,8 @@
 let map = null;
 let placesService = null;
 let geocoder = null;
+let directionsService = null;
+let directionsRenderer = null;
 let currentMarkers = [];
 let selectedPlaces = [];
 
@@ -14,14 +16,30 @@ function initializeGoogleMaps() {
         return;
     }
     
-    // 地図を初期化
-    initMap();
-    
-    // Places ServiceとGeocoderを初期化
-    placesService = new google.maps.places.PlacesService(map);
-    geocoder = new google.maps.Geocoder();
-    
-    console.log('Google Maps API初期化完了');
+    try {
+        // 地図を初期化
+        initMap();
+        
+        // Places ServiceとGeocoderを初期化
+        placesService = new google.maps.places.PlacesService(map);
+        geocoder = new google.maps.Geocoder();
+        
+        // Directions ServiceとRendererを初期化
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer({
+            draggable: true,
+            suppressMarkers: false
+        });
+        directionsRenderer.setMap(map);
+        
+        console.log('Google Maps API初期化完了');
+        console.log('PlacesService:', placesService);
+        console.log('Geocoder:', geocoder);
+        console.log('DirectionsService:', directionsService);
+    } catch (error) {
+        console.error('Google Maps API初期化エラー:', error);
+        alert('Google Maps APIの初期化に失敗しました: ' + error.message);
+    }
 }
 
 // 地図を初期化
@@ -93,17 +111,28 @@ async function searchPlaces(formData) {
 // 地域の座標を取得
 function getLocationCoordinates(prefecture, city) {
     return new Promise((resolve, reject) => {
-        const address = `${prefecture} ${city}`;
+        const address = `${prefecture} ${city}, Japan`;
+        console.log('Geocoding address:', address);
         
-        geocoder.geocode({ address: address }, (results, status) => {
-            if (status === 'OK' && results[0]) {
+        geocoder.geocode({ 
+            address: address,
+            region: 'JP' // 日本に限定
+        }, (results, status) => {
+            console.log('Geocoding status:', status);
+            console.log('Geocoding results:', results);
+            
+            if (status === google.maps.GeocoderStatus.OK && results[0]) {
                 const location = results[0].geometry.location;
-                resolve({
+                const coords = {
                     lat: location.lat(),
                     lng: location.lng()
-                });
+                };
+                console.log('Coordinates found:', coords);
+                resolve(coords);
             } else {
-                reject(new Error(`地域の座標を取得できませんでした: ${address}`));
+                const errorMsg = `地域の座標を取得できませんでした: ${address} (Status: ${status})`;
+                console.error(errorMsg);
+                reject(new Error(errorMsg));
             }
         });
     });
@@ -317,6 +346,163 @@ function updateStepIndicator(activeStep) {
             step.classList.add('active');
         }
     });
+}
+
+// ルート作成機能
+function createRoute() {
+    if (!directionsService || !directionsRenderer) {
+        alert('Directions APIが初期化されていません');
+        return;
+    }
+    
+    if (selectedPlaces.length < 2) {
+        alert('ルートを作成するには2つ以上の場所を選択してください');
+        return;
+    }
+    
+    console.log('ルート作成開始:', selectedPlaces);
+    
+    // 最初の場所を出発地、最後の場所を目的地とし、中間の場所を経由地とする
+    const origin = selectedPlaces[0].position;
+    const destination = selectedPlaces[selectedPlaces.length - 1].position;
+    const waypoints = selectedPlaces.slice(1, -1).map(place => ({
+        location: place.position,
+        stopover: true
+    }));
+    
+    // 移動手段を取得（フォームから）
+    const transportMode = getSelectedTransportMode();
+    
+    const request = {
+        origin: origin,
+        destination: destination,
+        waypoints: waypoints,
+        travelMode: transportMode,
+        optimizeWaypoints: true, // 経由地の順序を最適化
+        unitSystem: google.maps.UnitSystem.METRIC
+    };
+    
+    directionsService.route(request, (result, status) => {
+        if (status === 'OK') {
+            console.log('ルート計算成功:', result);
+            
+            // 既存のマーカーを非表示にしてルートを表示
+            hideMarkers();
+            directionsRenderer.setDirections(result);
+            
+            // ルート情報を表示
+            displayRouteInfo(result);
+            
+            // Export セクションを表示
+            const exportSection = document.getElementById('exportSection');
+            if (exportSection) {
+                exportSection.style.display = 'block';
+                updateStepIndicator(4); // "PDF出力"をアクティブに
+            }
+            
+        } else {
+            console.error('ルート計算エラー:', status);
+            alert('ルートの計算に失敗しました: ' + status);
+        }
+    });
+}
+
+// 選択された移動手段をGoogle Maps APIの形式に変換
+function getSelectedTransportMode() {
+    const transport = document.querySelector('.radio-group input[type="radio"]:checked')?.value;
+    
+    switch(transport) {
+        case 'walking':
+            return google.maps.TravelMode.WALKING;
+        case 'driving':
+            return google.maps.TravelMode.DRIVING;
+        case 'transit':
+            return google.maps.TravelMode.TRANSIT;
+        default:
+            return google.maps.TravelMode.WALKING;
+    }
+}
+
+// 既存のマーカーを非表示
+function hideMarkers() {
+    currentMarkers.forEach(marker => {
+        marker.setVisible(false);
+    });
+}
+
+// マーカーを再表示
+function showMarkers() {
+    currentMarkers.forEach(marker => {
+        marker.setVisible(true);
+    });
+}
+
+// ルート情報を表示
+function displayRouteInfo(directionsResult) {
+    const route = directionsResult.routes[0];
+    const leg = route.legs[0];
+    
+    // 合計距離と時間を計算
+    let totalDistance = 0;
+    let totalDuration = 0;
+    
+    route.legs.forEach(leg => {
+        totalDistance += leg.distance.value;
+        totalDuration += leg.duration.value;
+    });
+    
+    // 距離をキロメートルに変換
+    const distanceKm = (totalDistance / 1000).toFixed(1);
+    
+    // 時間を時間と分に変換
+    const hours = Math.floor(totalDuration / 3600);
+    const minutes = Math.floor((totalDuration % 3600) / 60);
+    const timeText = hours > 0 ? `${hours}時間${minutes}分` : `${minutes}分`;
+    
+    // ルート情報を表示
+    const routeSection = document.getElementById('routeSection');
+    const selectedPlacesDiv = document.getElementById('selectedPlaces');
+    
+    if (selectedPlacesDiv) {
+        selectedPlacesDiv.innerHTML = `
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <h3 style="margin: 0 0 10px 0; color: #28a745;">📍 作成されたルート</h3>
+                <div style="display: flex; gap: 20px; margin-bottom: 10px;">
+                    <div><strong>総距離:</strong> ${distanceKm} km</div>
+                    <div><strong>所要時間:</strong> ${timeText}</div>
+                </div>
+                <div><strong>経路:</strong></div>
+                <ol style="margin: 10px 0; padding-left: 20px;">
+                    ${selectedPlaces.map(place => `<li>${place.name}</li>`).join('')}
+                </ol>
+            </div>
+            <div style="margin-top: 15px;">
+                <button type="button" onclick="clearRoute()" class="btn-secondary" style="margin-right: 10px;">ルートをクリア</button>
+                <button type="button" onclick="showMarkers()" class="btn-secondary">マーカーを表示</button>
+            </div>
+        `;
+    }
+}
+
+// ルートをクリア
+function clearRoute() {
+    if (directionsRenderer) {
+        directionsRenderer.setDirections({routes: []});
+    }
+    
+    // マーカーを再表示
+    showMarkers();
+    
+    // ルートセクションの表示を戻す
+    updateRouteSection();
+    
+    // Export セクションを非表示
+    const exportSection = document.getElementById('exportSection');
+    if (exportSection) {
+        exportSection.style.display = 'none';
+    }
+    
+    console.log('ルートがクリアされました');
 }
 
 // APIキー未設定の警告を表示
