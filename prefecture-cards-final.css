@@ -1,0 +1,575 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: #f8f9fa;
+    font-size: 14px;
+}
+
+.container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 15px;
+    background: white;
+    min-height: 100vh;
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 15px 0;
+    border-bottom: 2px solid #e9ecef;
+}
+
+header h1 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+header p {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Prefecture List Section */
+.prefecture-list-section {
+    margin-bottom: 30px;
+    position: relative;
+}
+
+/* PC版: Navigation Controls */
+.nav-controls {
+    display: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.nav-btn {
+    position: absolute;
+    background: rgba(37, 99, 235, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    pointer-events: auto;
+}
+
+.nav-btn-left {
+    left: -60px;
+}
+
+.nav-btn-right {
+    right: -60px;
+}
+
+.nav-btn:hover {
+    background: rgba(37, 99, 235, 1);
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+
+.nav-btn:disabled {
+    background: rgba(108, 117, 125, 0.5);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Prefecture Scroll Container */
+.prefecture-scroll-container {
+    overflow: visible;
+}
+
+.prefecture_list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Card Base */
+.o-card {
+    background: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.o-card--shadow-light {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+    transition: box-shadow 0.2s ease;
+}
+
+.o-card--shadow-light:hover {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+}
+
+/* Prefecture List Item */
+.prefecture_list__item {
+    display: flex;
+    margin-bottom: 12px;
+    height: 80px;
+    cursor: pointer;
+}
+
+.prefecture_list__item:hover {
+    transform: translateY(-1px);
+}
+
+/* Image Area */
+.prefecture_list__item__image_wrap {
+    position: relative;
+    flex-shrink: 0;
+    width: 120px;
+    height: 80px;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.image--ratio-3-2 {
+    aspect-ratio: 3/2;
+}
+
+.image__mask {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 6px 0 0 6px;
+}
+
+.image__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.prefecture_list__item:hover .image__img {
+    transform: scale(1.05);
+}
+
+/* Rank Number Overlay */
+.prefecture_list__item__rank_no {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 3px;
+    min-width: 18px;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* Text Area */
+.prefecture_list__item__text_wrap {
+    flex: 1;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #fff;
+}
+
+.prefecture_list__item__text {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.prefecture_list__item__main_info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Prefecture Name and Rating */
+.prefecture_list__item__name {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.3;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.prefecture_list__item__name:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+
+/* Dot Rating */
+.dot_rating {
+    display: inline-flex;
+    align-items: center;
+}
+
+.dot_rating__dots {
+    font-size: 16px;
+    line-height: 1;
+    color: #dc2626;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.dot_rating__dots--s {
+    font-size: 14px;
+}
+
+.has-tooltip {
+    cursor: help;
+}
+
+/* Description */
+.prefecture_list__item__desc {
+    color: #64748b;
+    font-size: 0.8rem;
+    line-height: 1.3;
+    margin-top: 1px;
+}
+
+.s-typography--links a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.s-typography--links a:hover {
+    text-decoration: underline;
+}
+
+/* Active/Selected State */
+.prefecture_list__item.selected {
+    background: #eff6ff;
+    border-left: 3px solid #2563eb;
+}
+
+.prefecture_list__item.selected .prefecture_list__item__name {
+    color: #1d4ed8;
+    font-weight: 700;
+}
+
+/* Selection Info Section */
+.selection-info {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.selection-info h3 {
+    color: #1e293b;
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-left: 3px solid #2563eb;
+    padding-left: 12px;
+}
+
+#selected-prefecture-display {
+    font-size: 0.9rem;
+    color: #475569;
+    margin-bottom: 10px;
+}
+
+#selected-prefecture-details {
+    background: white;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+}
+
+#selected-prefecture-title {
+    color: #1e293b;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: 600;
+}
+
+#selected-prefecture-data {
+    background: #f8fafc;
+    padding: 12px;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+}
+
+#selected-prefecture-data p {
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+    color: #475569;
+}
+
+/* PC版: 横スクロールレイアウト */
+@media (min-width: 769px) {
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 20px auto;
+        padding: 30px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        min-height: calc(100vh - 40px);
+    }
+
+    header {
+        margin-bottom: 40px;
+        padding: 30px 0;
+        border-bottom: 3px solid #667eea;
+    }
+
+    header h1 {
+        font-size: 2.2rem;
+        color: #667eea;
+        margin-bottom: 15px;
+    }
+
+    header p {
+        font-size: 1.1rem;
+        color: #666;
+    }
+
+    .prefecture-list-section {
+        background: #f8f9fa;
+        padding: 40px;
+        border-radius: 15px;
+        margin-bottom: 40px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Navigation Controls Display */
+    .nav-controls {
+        display: block;
+    }
+
+    /* PC版: 横スクロールコンテナ */
+    .prefecture-scroll-container {
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        padding: 20px 0;
+    }
+
+    .prefecture-scroll-container::-webkit-scrollbar {
+        display: none;
+    }
+
+    .prefecture_list {
+        display: flex;
+        gap: 25px;
+        padding: 0 70px;
+        min-width: max-content;
+    }
+
+    /* PC版: Prefecture Card */
+    .prefecture_list__item {
+        flex: 0 0 300px;
+        height: 220px;
+        flex-direction: column;
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+        margin-bottom: 0;
+    }
+
+    .prefecture_list__item:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+    }
+
+    .prefecture_list__item.selected {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+        border: 3px solid #667eea;
+        border-left: 3px solid #667eea;
+    }
+
+    /* PC版: Image Area */
+    .prefecture_list__item__image_wrap {
+        width: 100%;
+        height: 140px;
+    }
+
+    .image__mask {
+        border-radius: 15px 15px 0 0;
+    }
+
+    .prefecture_list__item__rank_no {
+        top: 10px;
+        left: 10px;
+        font-size: 14px;
+        padding: 4px 8px;
+    }
+
+    /* PC版: Text Area */
+    .prefecture_list__item__text_wrap {
+        height: 80px;
+        padding: 20px;
+        justify-content: center;
+    }
+
+    .prefecture_list__item__name {
+        font-size: 1.2rem;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .prefecture_list__item__name:hover {
+        color: #667eea;
+    }
+
+    .prefecture_list__item.selected .prefecture_list__item__name {
+        color: #667eea;
+        font-weight: 700;
+    }
+
+    .prefecture_list__item__desc {
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    /* PC版: Selection Info */
+    .selection-info {
+        background: #e8f5e8;
+        border: 2px solid #28a745;
+        border-radius: 12px;
+        padding: 30px;
+    }
+
+    .selection-info h3 {
+        color: #155724;
+        font-size: 1.3rem;
+        border-left: 4px solid #28a745;
+        padding-left: 15px;
+    }
+
+    #selected-prefecture-display {
+        font-size: 1rem;
+        color: #155724;
+    }
+
+    #selected-prefecture-details {
+        border: 1px solid #d4edda;
+    }
+
+    #selected-prefecture-title {
+        color: #155724;
+        font-size: 1.4rem;
+    }
+
+    #selected-prefecture-data {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+    }
+
+    #selected-prefecture-data p {
+        font-size: 1rem;
+        color: #155724;
+        font-weight: 500;
+    }
+}
+
+/* 小さいモバイル画面対応 */
+@media (max-width: 400px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .prefecture_list__item {
+        height: 75px;
+    }
+    
+    .prefecture_list__item__image_wrap {
+        width: 110px;
+        height: 75px;
+    }
+    
+    .prefecture_list__item__text_wrap {
+        padding: 6px 10px;
+    }
+    
+    .prefecture_list__item__name {
+        font-size: 0.9rem;
+    }
+    
+    .prefecture_list__item__desc {
+        font-size: 0.75rem;
+    }
+}
+
+/* Loading Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.prefecture_list__item {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.prefecture_list__item:nth-child(1) { animation-delay: 0.1s; }
+.prefecture_list__item:nth-child(2) { animation-delay: 0.2s; }
+.prefecture_list__item:nth-child(3) { animation-delay: 0.3s; }
+.prefecture_list__item:nth-child(4) { animation-delay: 0.4s; }
+.prefecture_list__item:nth-child(5) { animation-delay: 0.5s; }
+.prefecture_list__item:nth-child(6) { animation-delay: 0.6s; }
+.prefecture_list__item:nth-child(7) { animation-delay: 0.7s; }
+
+/* Selection Animation */
+@keyframes cardSelect {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1.02); }
+}
+
+.prefecture_list__item.animate-select {
+    animation: cardSelect 0.4s ease-out;
+}
