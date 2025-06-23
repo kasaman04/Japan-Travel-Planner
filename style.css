@@ -987,18 +987,20 @@ footer {
     font-style: italic;
 }
 
-/* Cards Container */
-.cards-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 15px;
+/* PC版: Prefecture Navigation Controls */
+.prefecture-list-section .nav-controls {
+    display: block;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     width: 100%;
-    max-width: 100%;
+    pointer-events: none;
+    z-index: 10;
 }
 
-/* Navigation Buttons */
-.nav-btn {
+/* Prefecture Navigation Buttons */
+.prefecture-list-section .nav-btn {
+    position: absolute;
     background: rgba(102, 126, 234, 0.9);
     border: none;
     border-radius: 50%;
@@ -1013,21 +1015,24 @@ footer {
     justify-content: center;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-    z-index: 10;
-    flex-shrink: 0;
+    pointer-events: auto;
 }
 
-.nav-btn:hover {
+.prefecture-list-section .nav-btn-left {
+    left: -60px;
+}
+
+.prefecture-list-section .nav-btn-right {
+    right: -60px;
+}
+
+.prefecture-list-section .nav-btn:hover {
     background: rgba(102, 126, 234, 1);
     transform: scale(1.1);
     box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
-.nav-btn:active {
-    transform: scale(0.95);
-}
-
-.nav-btn:disabled {
+.prefecture-list-section .nav-btn:disabled {
     background: rgba(108, 117, 125, 0.5);
     cursor: not-allowed;
     transform: none;
@@ -1039,27 +1044,12 @@ footer {
     overflow-x: auto;
     overflow-y: hidden;
     scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    scrollbar-color: #cbd5e0 #f7fafc;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
 }
 
 .prefecture-scroll-container::-webkit-scrollbar {
-    height: 6px;
-}
-
-.prefecture-scroll-container::-webkit-scrollbar-track {
-    background: #f7fafc;
-    border-radius: 3px;
-}
-
-.prefecture-scroll-container::-webkit-scrollbar-thumb {
-    background: #cbd5e0;
-    border-radius: 3px;
-}
-
-.prefecture-scroll-container::-webkit-scrollbar-thumb:hover {
-    background: #a0aec0;
+    display: none; /* Chrome, Safari, Opera */
 }
 
 .prefecture_list {
@@ -1067,7 +1057,7 @@ footer {
     padding: 0;
     margin: 0;
     display: flex;
-    gap: 12px;
+    gap: 20px;
     min-width: fit-content;
 }
 
@@ -1413,21 +1403,13 @@ footer {
         font-size: 16px;
     }
     
-    /* Mobile: Change to vertical list */
-    .cards-container {
-        flex-direction: column;
-        gap: 0;
-    }
-    
-    .nav-btn {
+    /* Mobile: Prefecture navigation */
+    .prefecture-list-section .nav-controls {
         display: none;
     }
     
-    .cards-scroll-area {
-        flex-direction: column;
+    .prefecture-scroll-container {
         overflow: visible;
-        gap: 12px;
-        padding: 0;
     }
     
     .prefecture_list {
