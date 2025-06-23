@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // インタラクティブ地図の初期化
 function initializeInteractiveMap() {
     const regionAreas = document.querySelectorAll('.region-area');
+    const overlayImage = document.getElementById('region-overlay');
     const hoverInfo = document.getElementById('hover-info');
     const regionName = document.getElementById('region-name');
     
@@ -32,9 +33,13 @@ function initializeInteractiveMap() {
         // マウスホバー開始
         area.addEventListener('mouseenter', function() {
             const region = this.getAttribute('data-region');
+            const imagePath = this.getAttribute('data-image');
             const name = this.getAttribute('data-name');
             
             currentHoveredRegion = region;
+            
+            // オーバーレイ画像を表示
+            showRegionOverlay(imagePath);
             
             // ホバー情報を表示
             showHoverInfo(name);
@@ -48,6 +53,9 @@ function initializeInteractiveMap() {
         // マウスホバー終了
         area.addEventListener('mouseleave', function() {
             currentHoveredRegion = null;
+            
+            // オーバーレイ画像を非表示
+            hideRegionOverlay();
             
             // ホバー情報を非表示
             hideHoverInfo();
@@ -72,18 +80,24 @@ function initializeInteractiveMap() {
     });
 }
 
-// ベース地図の変更
-function changeBaseMap(imagePath) {
-    const baseMapImage = document.getElementById('base-map-image');
-    baseMapImage.src = imagePath;
-    baseMapImage.alt = imagePath.split('/').pop().replace('.png', '');
+// 地域オーバーレイの表示
+function showRegionOverlay(imagePath) {
+    const overlayImage = document.getElementById('region-overlay');
+    
+    overlayImage.src = imagePath;
+    overlayImage.alt = imagePath.split('/').pop().replace('.png', '');
+    overlayImage.classList.add('visible', 'animate-in');
+    
+    // アニメーションクラスを一定時間後に削除
+    setTimeout(() => {
+        overlayImage.classList.remove('animate-in');
+    }, 300);
 }
 
-// ベース地図を元に戻す
-function resetBaseMap() {
-    const baseMapImage = document.getElementById('base-map-image');
-    baseMapImage.src = '日本地図/全体.png';
-    baseMapImage.alt = '日本地図';
+// 地域オーバーレイの非表示
+function hideRegionOverlay() {
+    const overlayImage = document.getElementById('region-overlay');
+    overlayImage.classList.remove('visible');
 }
 
 // ホバー情報の表示
@@ -110,12 +124,6 @@ function selectRegion(regionKey, imagePath, name, areaElement) {
     
     // クリックされたエリアを選択状態にする
     areaElement.classList.add('selected');
-    
-    // ベース地図を色付き地域画像に変更
-    changeBaseMap(imagePath);
-    
-    // ホバー情報を隠す
-    hideHoverInfo();
     
     // 選択された地域の情報を表示
     showSelectedRegionInfo(regionKey, imagePath, name);
@@ -171,6 +179,34 @@ function showSelectedRegionInfo(regionKey, imagePath, name) {
     }
 }
 
+// テストコントロールの初期化
+function initializeTestControls() {
+    const resetBtn = document.getElementById('reset-selection');
+    const showAreasBtn = document.getElementById('show-all-areas');
+    const debugBtn = document.getElementById('debug-mode');
+    
+    // 選択リセットボタン
+    if (resetBtn) {
+        resetBtn.addEventListener('click', function() {
+            resetSelection();
+        });
+    }
+    
+    // エリア境界表示ボタン
+    if (showAreasBtn) {
+        showAreasBtn.addEventListener('click', function() {
+            toggleAreaVisibility();
+        });
+    }
+    
+    // デバッグモードボタン
+    if (debugBtn) {
+        debugBtn.addEventListener('click', function() {
+            toggleDebugMode();
+        });
+    }
+}
+
 // 選択のリセット
 function resetSelection() {
     const regionAreas = document.querySelectorAll('.region-area');
@@ -184,10 +220,8 @@ function resetSelection() {
     selectedRegionDisplay.textContent = 'まだ地域が選択されていません';
     selectedRegionDetails.style.display = 'none';
     
-    // ベース地図を元に戻す
-    resetBaseMap();
-    
-    // ホバー情報を隠す
+    // オーバーレイを非表示
+    hideRegionOverlay();
     hideHoverInfo();
     
     // グローバル変数をリセット
@@ -225,7 +259,7 @@ function toggleAreaVisibility() {
         showAreasBtn.textContent = 'エリア境界を表示';
     }
     
-    console.log('エリア境界表示:', showAreas ? 'ON' : 'OFF');
+    console.log('エリア境界表示:', showAreas ? '有効' : '無効');
 }
 
 // デバッグモードの切り替え
@@ -238,55 +272,38 @@ function toggleDebugMode() {
     if (debugMode) {
         debugInfo.style.display = 'block';
         debugBtn.classList.add('active');
-        debugBtn.textContent = 'デバッグモード OFF';
+        debugBtn.textContent = 'デバッグモード: ON';
     } else {
         debugInfo.style.display = 'none';
         debugBtn.classList.remove('active');
-        debugBtn.textContent = 'デバッグモード';
+        debugBtn.textContent = 'デバッグモード: OFF';
     }
     
-    console.log('デバッグモード:', debugMode ? 'ON' : 'OFF');
+    console.log('デバッグモード:', debugMode ? '有効' : '無効');
 }
 
-// テストコントロールの初期化
-function initializeTestControls() {
-    const resetBtn = document.getElementById('reset-selection');
-    const showAreasBtn = document.getElementById('show-all-areas');
-    const debugBtn = document.getElementById('debug-mode');
-    
-    if (resetBtn) {
-        resetBtn.addEventListener('click', resetSelection);
-    }
-    
-    if (showAreasBtn) {
-        showAreasBtn.addEventListener('click', toggleAreaVisibility);
-    }
-    
-    if (debugBtn) {
-        debugBtn.addEventListener('click', toggleDebugMode);
-    }
-}
-
-// マウス座標の追跡（デバッグ用）
+// マウス座標の追跡初期化
 function initializeMouseTracking() {
     const mapContainer = document.querySelector('.map-container');
     const debugCoords = document.getElementById('debug-coords');
     
     if (mapContainer && debugCoords) {
-        mapContainer.addEventListener('mousemove', function(event) {
-            const rect = mapContainer.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-            const xPercent = ((x / rect.width) * 100).toFixed(1);
-            const yPercent = ((y / rect.height) * 100).toFixed(1);
+        mapContainer.addEventListener('mousemove', function(e) {
+            const rect = this.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+            const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
             
-            debugCoords.textContent = `x: ${x}px (${xPercent}%), y: ${y}px (${yPercent}%)`;
+            if (debugMode) {
+                debugCoords.textContent = `x: ${x}%, y: ${y}%`;
+            }
         });
     }
 }
 
 // デバッグ情報の更新
 function updateDebugInfo(type, value) {
+    if (!debugMode) return;
+    
     if (type === 'hover') {
         const debugHover = document.getElementById('debug-hover');
         if (debugHover) {
@@ -299,3 +316,49 @@ function updateDebugInfo(type, value) {
         }
     }
 }
+
+// 地域データ読み込みチェック
+function checkRegionsData() {
+    if (typeof regionsData === 'undefined') {
+        console.warn('regions.js が読み込まれていません。都道府県の詳細情報が表示されません。');
+        return false;
+    }
+    console.log('地域データが正常に読み込まれました:', Object.keys(regionsData).length + '地域');
+    return true;
+}
+
+// 外部から呼び出し可能な関数群
+function getCurrentHoveredRegion() {
+    return currentHoveredRegion;
+}
+
+function getSelectedRegion() {
+    return selectedRegion;
+}
+
+function setRegionSelection(regionKey) {
+    const regionArea = document.querySelector(`[data-region="${regionKey}"]`);
+    if (regionArea) {
+        regionArea.click();
+        return true;
+    }
+    return false;
+}
+
+// エリア座標の調整用ヘルパー関数（開発用）
+function logRegionCoordinates() {
+    const regionAreas = document.querySelectorAll('.region-area');
+    console.log('=== 地域エリア座標一覧 ===');
+    regionAreas.forEach(area => {
+        const region = area.getAttribute('data-region');
+        const style = area.getAttribute('style');
+        console.log(`${region}: ${style}`);
+    });
+}
+
+// 初期化後のチェック
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        checkRegionsData();
+    }, 100);
+});

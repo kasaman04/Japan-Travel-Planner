@@ -99,6 +99,30 @@ header p {
     transition: opacity 0.3s ease;
 }
 
+/* Overlay Map */
+.overlay-map {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.overlay-image {
+    width: 100%;
+    height: auto;
+    max-width: 500px;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.overlay-image.visible {
+    opacity: 0.9;
+}
+
 /* Clickable Areas */
 .clickable-areas {
     position: absolute;
@@ -106,7 +130,7 @@ header p {
     left: 20px;
     right: 20px;
     bottom: 20px;
-    z-index: 2;
+    z-index: 3;
 }
 
 .region-area {
@@ -388,57 +412,6 @@ header p {
     font-size: 13px;
 }
 
-/* モバイル用座標調整 */
-@media (max-width: 768px) {
-    /* 北海道地方 */
-    .hokkaido {
-        top: 20% !important;
-        left: 89% !important;
-    }
-    
-    /* 東北地方 */
-    .tohoku {
-        top: 45% !important;
-        left: 78% !important;
-    }
-    
-    /* 関東地方 */
-    .kanto {
-        top: 63% !important;
-        left: 69% !important;
-    }
-    
-    /* 中部地方 */
-    .chubu {
-        top: 62% !important;
-        left: 57% !important;
-    }
-    
-    /* 近畿地方 */
-    .kinki {
-        top: 67% !important;
-        left: 46% !important;
-    }
-    
-    /* 中国地方 */
-    .chugoku {
-        top: 63% !important;
-        left: 33% !important;
-    }
-    
-    /* 四国地方 */
-    .shikoku {
-        top: 71% !important;
-        left: 34% !important;
-    }
-    
-    /* 九州地方 */
-    .kyushu {
-        top: 73% !important;
-        left: 20% !important;
-    }
-}
-
 /* レスポンシブデザイン */
 @media (max-width: 768px) {
     .container {
@@ -505,7 +478,16 @@ header p {
     100% { opacity: 0.9; transform: scale(1); }
 }
 
+.overlay-image.animate-in {
+    animation: regionHighlight 0.3s ease-out;
+}
+
 /* ホバー時の特殊効果 */
 .map-container:hover .base-map-image {
     opacity: 0.6;
+}
+
+.region-area:hover + .overlay-map .overlay-image.visible {
+    opacity: 1;
+    filter: brightness(1.1) saturate(1.2);
 }
