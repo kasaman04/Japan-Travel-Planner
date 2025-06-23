@@ -691,3 +691,270 @@ function setupActivityCards() {
         }
     };
 }
+
+// Prefecture Selection Functionality - prefecture-cards-final.html仕様
+document.addEventListener('DOMContentLoaded', function() {
+    setupPrefectureSelection();
+});
+
+function setupPrefectureSelection() {
+    const prefectureSection = document.querySelector('.prefecture-list-section');
+    const prefectureList = document.querySelector('.prefecture_list');
+    const scrollContainer = document.getElementById('prefecture-scroll-container');
+    const scrollLeftBtn = document.getElementById('prefecture-scroll-left');
+    const scrollRightBtn = document.getElementById('prefecture-scroll-right');
+    
+    let selectedPrefecture = null;
+    let currentRegion = null;
+    
+    // Prefecture data by region
+    const prefectureDataByRegion = {
+        'Hokkaido': [
+            { id: 'hokkaido', name: '北海道', attractions: '札幌、函館、小樽', image: 'https://images.unsplash.com/photo-1578022761797-b8636ac1773c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' }
+        ],
+        'Tohoku': [
+            { id: 'aomori', name: '青森県', attractions: '青森ねぶた祭、弘前城', image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'iwate', name: '岩手県', attractions: '中尊寺金色堂、岩手山', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'miyagi', name: '宮城県', attractions: '仙台城、松島', image: 'https://images.unsplash.com/photo-1605883705077-8d3d3cebe78c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'akita', name: '秋田県', attractions: '角館、田沢湖', image: 'https://images.unsplash.com/photo-1551726899-1d5e38c6e014?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'yamagata', name: '山形県', attractions: '山寺、蔵王', image: 'https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'fukushima', name: '福島県', attractions: '会津若松、磐梯山', image: 'https://images.unsplash.com/photo-1568096889942-6eedde686635?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' }
+        ],
+        'Kanto': [
+            { id: 'tokyo', name: '東京都', attractions: '浅草寺、東京タワー、スカイツリー', image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'kanagawa', name: '神奈川県', attractions: '鎌倉、横浜中華街、箱根', image: 'https://images.unsplash.com/photo-1605296867304-46d5465a13f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'chiba', name: '千葉県', attractions: '成田空港、ディズニーランド、鴨川', image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'saitama', name: '埼玉県', attractions: '川越、小江戸、秩父', image: 'https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'ibaraki', name: '茨城県', attractions: '大洗、ひたち海浜公園、袋田の滝', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'tochigi', name: '栃木県', attractions: '日光東照宮、華厳滝、那須', image: 'https://images.unsplash.com/photo-1605883705077-8d3d3cebe78c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'gunma', name: '群馬県', attractions: '草津温泉、富岡製糸場、尾瀬', image: 'https://images.unsplash.com/photo-1551726899-1d5e38c6e014?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' }
+        ],
+        'Chubu': [
+            { id: 'niigata', name: '新潟県', attractions: '佐渡島、越後湯沢', image: 'https://images.unsplash.com/photo-1578022761797-b8636ac1773c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'toyama', name: '富山県', attractions: '立山黒部、富山湾', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'ishikawa', name: '石川県', attractions: '金沢、兼六園', image: 'https://images.unsplash.com/photo-1605883705077-8d3d3cebe78c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'fukui', name: '福井県', attractions: '永平寺、東尋坊', image: 'https://images.unsplash.com/photo-1551726899-1d5e38c6e014?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'yamanashi', name: '山梨県', attractions: '富士山、河口湖', image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'nagano', name: '長野県', attractions: '軽井沢、上高地', image: 'https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'gifu', name: '岐阜県', attractions: '白川郷、高山', image: 'https://images.unsplash.com/photo-1568096889942-6eedde686635?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'shizuoka', name: '静岡県', attractions: '富士山、伊豆半島', image: 'https://images.unsplash.com/photo-1605296867304-46d5465a13f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'aichi', name: '愛知県', attractions: '名古屋城、熱田神宮', image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' }
+        ],
+        'Kinki': [
+            { id: 'mie', name: '三重県', attractions: '伊勢神宮、熊野古道', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'shiga', name: '滋賀県', attractions: '琵琶湖、彦根城', image: 'https://images.unsplash.com/photo-1605883705077-8d3d3cebe78c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'kyoto', name: '京都府', attractions: '清水寺、金閣寺、嵐山', image: 'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'osaka', name: '大阪府', attractions: '大阪城、道頓堀、USJ', image: 'https://images.unsplash.com/photo-1551726899-1d5e38c6e014?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'hyogo', name: '兵庫県', attractions: '姫路城、神戸港', image: 'https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'nara', name: '奈良県', attractions: '東大寺、奈良公園', image: 'https://images.unsplash.com/photo-1568096889942-6eedde686635?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'wakayama', name: '和歌山県', attractions: '高野山、白浜', image: 'https://images.unsplash.com/photo-1605296867304-46d5465a13f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' }
+        ],
+        'Chugoku': [
+            { id: 'tottori', name: '鳥取県', attractions: '鳥取砂丘、境港', image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'shimane', name: '島根県', attractions: '出雲大社、石見銀山', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'okayama', name: '岡山県', attractions: '岡山城、後楽園', image: 'https://images.unsplash.com/photo-1605883705077-8d3d3cebe78c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'hiroshima', name: '広島県', attractions: '厳島神社、原爆ドーム', image: 'https://images.unsplash.com/photo-1551726899-1d5e38c6e014?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'yamaguchi', name: '山口県', attractions: '錦帯橋、萩', image: 'https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' }
+        ],
+        'Shikoku': [
+            { id: 'tokushima', name: '徳島県', attractions: '阿波踊り、鳴門', image: 'https://images.unsplash.com/photo-1568096889942-6eedde686635?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'kagawa', name: '香川県', attractions: '讃岐うどん、金刀比羅宮', image: 'https://images.unsplash.com/photo-1605296867304-46d5465a13f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'ehime', name: '愛媛県', attractions: '松山城、道後温泉', image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'kochi', name: '高知県', attractions: '高知城、桂浜', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' }
+        ],
+        'Kyushu': [
+            { id: 'fukuoka', name: '福岡県', attractions: '大宰府、博多', image: 'https://images.unsplash.com/photo-1605883705077-8d3d3cebe78c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'saga', name: '佐賀県', attractions: '有田焼、嬉野温泉', image: 'https://images.unsplash.com/photo-1551726899-1d5e38c6e014?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'nagasaki', name: '長崎県', attractions: 'グラバー園、軍艦島', image: 'https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'kumamoto', name: '熊本県', attractions: '熊本城、阿蘇山', image: 'https://images.unsplash.com/photo-1568096889942-6eedde686635?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'oita', name: '大分県', attractions: '別府温泉、湯布院', image: 'https://images.unsplash.com/photo-1605296867304-46d5465a13f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'miyazaki', name: '宮崎県', attractions: '高千穂峡、青島', image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'kagoshima', name: '鹿児島県', attractions: '桜島、屋久島', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'okinawa', name: '沖縄県', attractions: '首里城、美ら海水族館', image: 'https://images.unsplash.com/photo-1605883705077-8d3d3cebe78c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' }
+        ]
+    };
+    
+    // Listen for region selection from interactive map
+    document.addEventListener('regionSelected', function(event) {
+        const regionData = event.detail;
+        showPrefecturesForRegion(regionData.region, regionData.name);
+    });
+    
+    function showPrefecturesForRegion(regionKey, regionName) {
+        currentRegion = regionKey;
+        const prefectures = prefectureDataByRegion[regionKey];
+        
+        if (!prefectures) {
+            console.warn(`No prefecture data found for region: ${regionKey}`);
+            return;
+        }
+        
+        // Show prefecture section
+        prefectureSection.style.display = 'block';
+        
+        // Clear existing prefectures
+        prefectureList.innerHTML = '';
+        
+        // Update section title
+        const sectionTitle = prefectureSection.querySelector('h3');
+        sectionTitle.textContent = `${regionName}の都道府県を選択してください`;
+        
+        // Generate prefecture cards
+        prefectures.forEach(prefecture => {
+            const card = createPrefectureCard(prefecture);
+            prefectureList.appendChild(card);
+        });
+        
+        // Initialize scroll functionality
+        setupPrefectureScrollEvents();
+        updatePrefectureScrollButtons();
+        
+        // Scroll prefecture section into view
+        prefectureSection.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+        });
+    }
+    
+    function createPrefectureCard(prefecture) {
+        const li = document.createElement('li');
+        li.className = 'prefecture_list__item o-card o-card--shadow-light';
+        li.dataset.prefecture = prefecture.id;
+        li.dataset.name = prefecture.name;
+        
+        li.innerHTML = `
+            <div class="prefecture_list__item__image_wrap">
+                <figure class="image image--ratio image--ratio-3-2">
+                    <div class="image__mask">
+                        <img class="image__img" src="${prefecture.image}" alt="${prefecture.name}">
+                    </div>
+                </figure>
+            </div>
+            
+            <div class="prefecture_list__item__text_wrap">
+                <div class="prefecture_list__item__text">
+                    <div class="prefecture_list__item__main_info">
+                        <a class="prefecture_list__item__name" href="#">
+                            ${prefecture.name}
+                        </a>
+                        <div class="prefecture_list__item__desc s-typography--links">${prefecture.attractions}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Add click event
+        li.addEventListener('click', function() {
+            selectPrefecture(this, prefecture.id, prefecture.name, prefecture.attractions);
+        });
+        
+        // Add hover effects
+        li.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('selected')) {
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 6px 12px rgba(0,0,0,0.15)';
+            }
+        });
+        
+        li.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('selected')) {
+                this.style.transform = '';
+                this.style.boxShadow = '';
+            }
+        });
+        
+        return li;
+    }
+    
+    function selectPrefecture(itemElement, prefectureId, prefectureName, attractions) {
+        // Remove previous selection
+        const allCards = prefectureList.querySelectorAll('.prefecture_list__item');
+        allCards.forEach(card => {
+            card.classList.remove('selected');
+            card.style.transform = '';
+        });
+        
+        // Add selection to clicked item
+        itemElement.classList.add('selected');
+        selectedPrefecture = prefectureId;
+        
+        // Update display
+        updatePrefectureSelectionDisplay(prefectureId, prefectureName, attractions);
+        
+        // Update hidden form fields for compatibility
+        const prefectureSelect = document.getElementById('prefecture');
+        if (prefectureSelect) {
+            prefectureSelect.value = prefectureId;
+        }
+        
+        console.log(`Selected prefecture: ${prefectureName} (${prefectureId})`);
+    }
+    
+    function updatePrefectureSelectionDisplay(prefectureId, prefectureName, attractions) {
+        // Store selection info but don't display (since we removed the display section)
+        console.log(`Prefecture selected: ${prefectureName} - ${attractions}`);
+    }
+    
+    // Scroll Events Setup
+    function setupPrefectureScrollEvents() {
+        if (!scrollLeftBtn || !scrollRightBtn || !scrollContainer) {
+            console.warn('Prefecture scroll elements not found');
+            return;
+        }
+        
+        // Left scroll button
+        scrollLeftBtn.addEventListener('click', function() {
+            scrollContainer.scrollBy({
+                left: -300,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Right scroll button
+        scrollRightBtn.addEventListener('click', function() {
+            scrollContainer.scrollBy({
+                left: 300,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Update button states on scroll
+        function updateScrollButtons() {
+            const isAtStart = scrollContainer.scrollLeft <= 0;
+            const isAtEnd = scrollContainer.scrollLeft >= (scrollContainer.scrollWidth - scrollContainer.clientWidth);
+            
+            scrollLeftBtn.disabled = isAtStart;
+            scrollRightBtn.disabled = isAtEnd;
+            
+            // Visual feedback with opacity
+            scrollLeftBtn.style.opacity = isAtStart ? '0.5' : '1';
+            scrollRightBtn.style.opacity = isAtEnd ? '0.5' : '1';
+        }
+        
+        // Initial button state
+        updateScrollButtons();
+        
+        // Update buttons on scroll
+        scrollContainer.addEventListener('scroll', updateScrollButtons);
+        
+        // Update buttons on window resize
+        window.addEventListener('resize', updateScrollButtons);
+        
+        console.log('Prefecture scroll navigation initialized');
+    }
+    
+    
+    // Initialize scroll functionality immediately
+    setupPrefectureScrollEvents();
+    
+    // Public API
+    window.PrefectureSelection = {
+        showRegion: showPrefecturesForRegion,
+        getSelectedPrefecture: function() {
+            return selectedPrefecture;
+        },
+        getCurrentRegion: function() {
+            return currentRegion;
+        }
+    };
+}

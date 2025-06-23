@@ -106,15 +106,14 @@
                     <h3>都道府県を選択してください</h3>
                     <p class="prefecture-instruction">関東地方の都道府県から選択してください</p>
                     
-                    <!-- PC版: ナビゲーションボタン -->
-                    <div class="nav-controls">
+                    <!-- カードコンテナ -->
+                    <div class="cards-container">
+                        <!-- ナビゲーションボタン（左） -->
                         <button class="nav-btn nav-btn-left" id="prefecture-scroll-left">‹</button>
-                        <button class="nav-btn nav-btn-right" id="prefecture-scroll-right">›</button>
-                    </div>
-
-                    <!-- 都道府県リスト -->
-                    <div class="prefecture-scroll-container" id="prefecture-scroll-container">
-                        <ul class="prefecture_list">
+                        
+                        <!-- カードスクロールエリア -->
+                        <div class="cards-scroll-area" id="prefecture-scroll-container">
+                            <ul class="prefecture_list">
                             <!-- 東京都 -->
                             <li class="prefecture_list__item o-card o-card--shadow-light" data-prefecture="tokyo" data-name="東京都">
                                 <div class="prefecture_list__item__image_wrap">
@@ -269,8 +268,11 @@
                                 </div>
                             </li>
                         </ul>
+                        </div>
+                        
+                        <!-- ナビゲーションボタン（右） -->
+                        <button class="nav-btn nav-btn-right" id="prefecture-scroll-right">›</button>
                     </div>
-
                 </section>
 
 
