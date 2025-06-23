@@ -46,14 +46,150 @@
                 </div>
 
                 <h2>やりたいことを選択してください</h2>
-                <div class="checkbox-group">
-                    <label><input type="checkbox" value="restaurant"> 🍜 食事 (Dining)</label>
-                    <label><input type="checkbox" value="tourist_attraction"> 🏯 観光 (Sightseeing)</label>
-                    <label><input type="checkbox" value="amusement_park"> 🎢 体験・アクティビティ (Activities)</label>
-                    <label><input type="checkbox" value="shopping_mall"> 🛍️ ショッピング (Shopping)</label>
-                    <label><input type="checkbox" value="spa"> ♨️ 温泉・リラクゼーション (Hot Springs)</label>
-                    <label><input type="checkbox" value="night_club"> 🍻 ナイトライフ (Nightlife)</label>
-                </div>
+                <section class="activity-list-section">
+                    <!-- PC版: ナビゲーションボタン -->
+                    <div class="nav-controls">
+                        <button class="nav-btn nav-btn-left" id="activity-scroll-left">‹</button>
+                        <button class="nav-btn nav-btn-right" id="activity-scroll-right">›</button>
+                    </div>
+
+                    <!-- アクティビティリスト -->
+                    <div class="activity-scroll-container" id="activity-scroll-container">
+                        <ul class="activity_list">
+                            <!-- 食事 -->
+                            <li class="activity_list__item o-card o-card--shadow-light" data-activity="restaurant">
+                                <div class="activity_list__item__image_wrap">
+                                    <figure class="image image--ratio image--ratio-3-2">
+                                        <div class="image__mask">
+                                            <img class="image__img" src="https://images.unsplash.com/photo-1568096889942-6eedde686635?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="食事">
+                                        </div>
+                                    </figure>
+                                </div>
+                                
+                                <div class="activity_list__item__text_wrap">
+                                    <div class="activity_list__item__text">
+                                        <div class="activity_list__item__main_info">
+                                            <a class="activity_list__item__name" href="#">
+                                                🍜 食事
+                                            </a>
+                                            <div class="activity_list__item__desc s-typography--links">レストラン、グルメ、地元料理</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- 観光 -->
+                            <li class="activity_list__item o-card o-card--shadow-light" data-activity="tourist_attraction">
+                                <div class="activity_list__item__image_wrap">
+                                    <figure class="image image--ratio image--ratio-3-2">
+                                        <div class="image__mask">
+                                            <img class="image__img" src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="観光">
+                                        </div>
+                                    </figure>
+                                </div>
+                                
+                                <div class="activity_list__item__text_wrap">
+                                    <div class="activity_list__item__text">
+                                        <div class="activity_list__item__main_info">
+                                            <a class="activity_list__item__name" href="#">
+                                                🏯 観光
+                                            </a>
+                                            <div class="activity_list__item__desc s-typography--links">神社仏閣、歴史的建造物、名所</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- 体験・アクティビティ -->
+                            <li class="activity_list__item o-card o-card--shadow-light" data-activity="amusement_park">
+                                <div class="activity_list__item__image_wrap">
+                                    <figure class="image image--ratio image--ratio-3-2">
+                                        <div class="image__mask">
+                                            <img class="image__img" src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="体験・アクティビティ">
+                                        </div>
+                                    </figure>
+                                </div>
+                                
+                                <div class="activity_list__item__text_wrap">
+                                    <div class="activity_list__item__text">
+                                        <div class="activity_list__item__main_info">
+                                            <a class="activity_list__item__name" href="#">
+                                                🎢 体験・アクティビティ
+                                            </a>
+                                            <div class="activity_list__item__desc s-typography--links">テーマパーク、文化体験、アウトドア</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- ショッピング -->
+                            <li class="activity_list__item o-card o-card--shadow-light" data-activity="shopping_mall">
+                                <div class="activity_list__item__image_wrap">
+                                    <figure class="image image--ratio image--ratio-3-2">
+                                        <div class="image__mask">
+                                            <img class="image__img" src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="ショッピング">
+                                        </div>
+                                    </figure>
+                                </div>
+                                
+                                <div class="activity_list__item__text_wrap">
+                                    <div class="activity_list__item__text">
+                                        <div class="activity_list__item__main_info">
+                                            <a class="activity_list__item__name" href="#">
+                                                🛍️ ショッピング
+                                            </a>
+                                            <div class="activity_list__item__desc s-typography--links">デパート、商店街、お土産店</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- 温泉・リラクゼーション -->
+                            <li class="activity_list__item o-card o-card--shadow-light" data-activity="spa">
+                                <div class="activity_list__item__image_wrap">
+                                    <figure class="image image--ratio image--ratio-3-2">
+                                        <div class="image__mask">
+                                            <img class="image__img" src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="温泉・リラクゼーション">
+                                        </div>
+                                    </figure>
+                                </div>
+                                
+                                <div class="activity_list__item__text_wrap">
+                                    <div class="activity_list__item__text">
+                                        <div class="activity_list__item__main_info">
+                                            <a class="activity_list__item__name" href="#">
+                                                ♨️ 温泉・リラクゼーション
+                                            </a>
+                                            <div class="activity_list__item__desc s-typography--links">温泉、スパ、マッサージ</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- ナイトライフ -->
+                            <li class="activity_list__item o-card o-card--shadow-light" data-activity="night_club">
+                                <div class="activity_list__item__image_wrap">
+                                    <figure class="image image--ratio image--ratio-3-2">
+                                        <div class="image__mask">
+                                            <img class="image__img" src="https://images.unsplash.com/photo-1543007630-9710e4a00a20?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="ナイトライフ">
+                                        </div>
+                                    </figure>
+                                </div>
+                                
+                                <div class="activity_list__item__text_wrap">
+                                    <div class="activity_list__item__text">
+                                        <div class="activity_list__item__main_info">
+                                            <a class="activity_list__item__name" href="#">
+                                                🍻 ナイトライフ
+                                            </a>
+                                            <div class="activity_list__item__desc s-typography--links">居酒屋、バー、クラブ</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
 
                 <h2>予算設定</h2>
                 <div class="form-group">

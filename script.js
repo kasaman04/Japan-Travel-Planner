@@ -474,3 +474,220 @@ function getRegionDisplayName(regionKey) {
     const region = regionsData[regionKey];
     return `${region.name_ja} (${region.name_en})`;
 }
+
+// Activity Cards Functionality - prefecture-cards-final.html仕様
+document.addEventListener('DOMContentLoaded', function() {
+    setupActivityCards();
+});
+
+function setupActivityCards() {
+    const activityItems = document.querySelectorAll('.activity_list__item');
+    const scrollContainer = document.getElementById('activity-scroll-container');
+    const scrollLeftBtn = document.getElementById('activity-scroll-left');
+    const scrollRightBtn = document.getElementById('activity-scroll-right');
+    
+    let selectedActivities = [];
+    let isPC = window.innerWidth > 768;
+    
+    // Initialize
+    initActivityCards();
+    
+    function initActivityCards() {
+        setupActivityEvents();
+        if (isPC) {
+            setupActivityScrollEvents();
+            updateActivityScrollButtons();
+        }
+        setupActivityResizeHandler();
+    }
+    
+    // Activity Events Setup
+    function setupActivityEvents() {
+        activityItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const activityId = this.dataset.activity;
+                toggleActivitySelection(this, activityId);
+            });
+            
+            // Hover effects
+            item.addEventListener('mouseenter', function() {
+                if (!this.classList.contains('selected')) {
+                    if (isPC) {
+                        this.style.transform = 'translateY(-4px) scale(1.01)';
+                    } else {
+                        this.style.transform = 'translateY(-1px)';
+                    }
+                }
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                if (!this.classList.contains('selected')) {
+                    this.style.transform = '';
+                }
+            });
+        });
+    }
+    
+    // Activity Selection Toggle
+    function toggleActivitySelection(itemElement, activityId) {
+        const isSelected = itemElement.classList.contains('selected');
+        
+        if (isSelected) {
+            // Remove selection
+            itemElement.classList.remove('selected');
+            selectedActivities = selectedActivities.filter(id => id !== activityId);
+            
+            // Remove from checkbox
+            const checkbox = document.querySelector(`input[value="${activityId}"]`);
+            if (checkbox) {
+                checkbox.checked = false;
+            }
+        } else {
+            // Add selection
+            itemElement.classList.add('selected');
+            selectedActivities.push(activityId);
+            
+            // Add to checkbox
+            const checkbox = document.querySelector(`input[value="${activityId}"]`);
+            if (checkbox) {
+                checkbox.checked = true;
+            }
+        }
+        
+        console.log(`Activity ${activityId} ${isSelected ? 'deselected' : 'selected'}`);
+        console.log('Selected activities:', selectedActivities);
+    }
+    
+    // Scroll Events Setup (PC Only)
+    function setupActivityScrollEvents() {
+        if (!isPC || !scrollLeftBtn || !scrollRightBtn) return;
+        
+        scrollLeftBtn.addEventListener('click', function() {
+            scrollContainer.scrollBy({
+                left: -350,
+                behavior: 'smooth'
+            });
+            setTimeout(updateActivityScrollButtons, 300);
+        });
+        
+        scrollRightBtn.addEventListener('click', function() {
+            scrollContainer.scrollBy({
+                left: 350,
+                behavior: 'smooth'
+            });
+            setTimeout(updateActivityScrollButtons, 300);
+        });
+        
+        // Update buttons on scroll
+        if (scrollContainer) {
+            scrollContainer.addEventListener('scroll', updateActivityScrollButtons);
+        }
+    }
+    
+    // Update Scroll Buttons State (PC Only)
+    function updateActivityScrollButtons() {
+        if (!isPC || !scrollLeftBtn || !scrollRightBtn || !scrollContainer) return;
+        
+        const scrollLeft = scrollContainer.scrollLeft;
+        const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+        
+        // Left button
+        if (scrollLeft <= 0) {
+            scrollLeftBtn.disabled = true;
+            scrollLeftBtn.style.opacity = '0.5';
+        } else {
+            scrollLeftBtn.disabled = false;
+            scrollLeftBtn.style.opacity = '1';
+        }
+        
+        // Right button
+        if (scrollLeft >= maxScroll - 1) {
+            scrollRightBtn.disabled = true;
+            scrollRightBtn.style.opacity = '0.5';
+        } else {
+            scrollRightBtn.disabled = false;
+            scrollRightBtn.style.opacity = '1';
+        }
+    }
+    
+    // Resize Handler
+    function setupActivityResizeHandler() {
+        let resizeTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                const wasPC = isPC;
+                isPC = window.innerWidth > 768;
+                
+                if (wasPC !== isPC) {
+                    // PC/モバイル切り替え時の処理
+                    if (isPC) {
+                        setupActivityScrollEvents();
+                        updateActivityScrollButtons();
+                    }
+                    
+                    // 選択状態をリセット
+                    activityItems.forEach(item => {
+                        item.style.transform = '';
+                    });
+                }
+                
+                if (isPC) {
+                    updateActivityScrollButtons();
+                }
+            }, 250);
+        });
+    }
+    
+    // Sync with existing checkboxes
+    function syncWithCheckboxes() {
+        const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const activityId = this.value;
+                const item = document.querySelector(`[data-activity="${activityId}"]`);
+                
+                if (item) {
+                    if (this.checked) {
+                        item.classList.add('selected');
+                        if (!selectedActivities.includes(activityId)) {
+                            selectedActivities.push(activityId);
+                        }
+                    } else {
+                        item.classList.remove('selected');
+                        selectedActivities = selectedActivities.filter(id => id !== activityId);
+                    }
+                }
+            });
+        });
+    }
+    
+    // Initialize checkbox sync
+    syncWithCheckboxes();
+    
+    // Public API
+    window.ActivitySelection = {
+        getSelectedActivities: function() {
+            return selectedActivities;
+        },
+        selectActivity: function(activityId) {
+            const item = document.querySelector(`[data-activity="${activityId}"]`);
+            if (item && !item.classList.contains('selected')) {
+                toggleActivitySelection(item, activityId);
+            }
+        },
+        deselectActivity: function(activityId) {
+            const item = document.querySelector(`[data-activity="${activityId}"]`);
+            if (item && item.classList.contains('selected')) {
+                toggleActivitySelection(item, activityId);
+            }
+        },
+        clearAll: function() {
+            activityItems.forEach(item => {
+                if (item.classList.contains('selected')) {
+                    toggleActivitySelection(item, item.dataset.activity);
+                }
+            });
+        }
+    };
+}

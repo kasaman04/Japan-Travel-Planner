@@ -173,21 +173,6 @@ header p {
     transform: scale(1.05);
 }
 
-/* Rank Number Overlay */
-.prefecture_list__item__rank_no {
-    position: absolute;
-    top: 6px;
-    left: 6px;
-    background: rgba(0,0,0,0.8);
-    color: white;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 3px;
-    min-width: 18px;
-    text-align: center;
-    line-height: 1.2;
-}
 
 /* Text Area */
 .prefecture_list__item__text_wrap {
@@ -231,27 +216,6 @@ header p {
     text-decoration: underline;
 }
 
-/* Dot Rating */
-.dot_rating {
-    display: inline-flex;
-    align-items: center;
-}
-
-.dot_rating__dots {
-    font-size: 16px;
-    line-height: 1;
-    color: #dc2626;
-    font-weight: bold;
-    letter-spacing: 1px;
-}
-
-.dot_rating__dots--s {
-    font-size: 14px;
-}
-
-.has-tooltip {
-    cursor: help;
-}
 
 /* Description */
 .prefecture_list__item__desc {
@@ -436,12 +400,6 @@ header p {
         border-radius: 15px 15px 0 0;
     }
 
-    .prefecture_list__item__rank_no {
-        top: 10px;
-        left: 10px;
-        font-size: 14px;
-        padding: 4px 8px;
-    }
 
     /* PC版: Text Area */
     .prefecture_list__item__text_wrap {
