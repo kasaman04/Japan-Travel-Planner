@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>インタラクティブ日本地図テスト - Interactive Japan Map Test</title>
+    <link rel="stylesheet" href="interactive-map-test.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>インタラクティブ日本地図テスト</h1>
+            <p>マウスを地図の上に移動させて、各地方をホバーしてみてください</p>
+        </header>
+
+        <main>
+            <!-- インタラクティブ地図セクション -->
+            <section class="interactive-map-section">
+                <h2>地域を選択してください</h2>
+                <p class="map-instruction">地図上の地域にマウスを合わせると、その地方がハイライトされます。クリックして選択してください。</p>
+                
+                <!-- 地図コンテナ -->
+                <div class="map-container">
+                    <!-- ベース地図 -->
+                    <div class="base-map">
+                        <img src="日本地図/全体.png" alt="日本地図" class="base-map-image">
+                    </div>
+                    
+                    <!-- オーバーレイ地図（ホバー時に表示） -->
+                    <div class="overlay-map">
+                        <img id="region-overlay" src="" alt="" class="overlay-image">
+                    </div>
+                    
+                    <!-- クリック可能なエリア（超小範囲円形） -->
+                    <div class="clickable-areas">
+                        <!-- 北海道地方 -->
+                        <div class="region-area circle-area hokkaido" 
+                             data-region="Hokkaido" 
+                             data-image="日本地図/北海道地方.png"
+                             data-name="北海道地方"
+                             style="top: 20%; left: 77%; width: 5%; height: 5%;"></div>
+                        
+                        <!-- 東北地方 -->
+                        <div class="region-area circle-area tohoku" 
+                             data-region="Tohoku" 
+                             data-image="日本地図/東北地方.png"
+                             data-name="東北地方"
+                             style="top: 45%; left: 69%; width: 5%; height: 5%;"></div>
+                        
+                        <!-- 関東地方 -->
+                        <div class="region-area circle-area kanto" 
+                             data-region="Kanto" 
+                             data-image="日本地図/関東地方.png"
+                             data-name="関東地方"
+                             style="top: 63%; left: 62%; width: 5%; height: 5%;"></div>
+                        
+                        <!-- 中部地方 -->
+                        <div class="region-area circle-area chubu" 
+                             data-region="Chubu" 
+                             data-image="日本地図/中部地方.png"
+                             data-name="中部地方"
+                             style="top: 62%; left: 51%; width: 5%; height: 5%;"></div>
+                        
+                        <!-- 近畿地方 -->
+                        <div class="region-area circle-area kinki" 
+                             data-region="Kinki" 
+                             data-image="日本地図/近畿地方.png"
+                             data-name="近畿地方"
+                             style="top: 67%; left: 42%; width: 5%; height: 5%;"></div>
+                        
+                        <!-- 中国地方 -->
+                        <div class="region-area circle-area chugoku" 
+                             data-region="Chugoku" 
+                             data-image="日本地図/中国地方.png"
+                             data-name="中国地方"
+                             style="top: 61%; left: 31%; width: 5%; height: 5%;"></div>
+                        
+                        <!-- 四国地方 -->
+                        <div class="region-area circle-area shikoku" 
+                             data-region="Shikoku" 
+                             data-image="日本地図/四国地方.png"
+                             data-name="四国地方"
+                             style="top: 71%; left: 31%; width: 5%; height: 5%;"></div>
+                        
+                        <!-- 九州地方 -->
+                        <div class="region-area circle-area kyushu" 
+                             data-region="Kyushu" 
+                             data-image="日本地図/九州地方.png"
+                             data-name="九州地方"
+                             style="top: 73%; left: 20%; width: 5%; height: 5%;"></div>
+                    </div>
+                    
+                    <!-- ホバー情報表示 -->
+                    <div class="hover-info" id="hover-info">
+                        <span id="region-name">地域名</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 選択された地域の情報表示 -->
+            <section class="selection-info">
+                <h3>選択された地域</h3>
+                <div id="selected-region-info">
+                    <p id="selected-region-display">まだ地域が選択されていません</p>
+                    <div id="selected-region-details" style="display: none;">
+                        <h4 id="selected-region-title"></h4>
+                        <div id="selected-region-image-container">
+                            <img id="selected-region-image" src="" alt="">
+                        </div>
+                        <div id="selected-region-data">
+                            <p>都道府県数: <span id="prefecture-count">0</span></p>
+                            <div id="prefecture-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 操作説明 -->
+            <section class="instructions">
+                <h3>操作方法</h3>
+                <ul>
+                    <li><strong>ホバー:</strong> 地図上にマウスを移動させると、その地方がハイライトされます</li>
+                    <li><strong>クリック:</strong> 地方をクリックすると選択が確定されます</li>
+                    <li><strong>詳細情報:</strong> 選択後に都道府県の詳細情報が表示されます</li>
+                </ul>
+            </section>
+
+            <!-- テストコントロール -->
+            <section class="test-controls">
+                <h3>テストコントロール</h3>
+                <div class="control-buttons">
+                    <button id="reset-selection" class="control-btn">選択をリセット</button>
+                    <button id="show-all-areas" class="control-btn">エリア境界を表示</button>
+                    <button id="debug-mode" class="control-btn">デバッグモード</button>
+                </div>
+                <div id="debug-info" class="debug-info" style="display: none;">
+                    <h4>デバッグ情報</h4>
+                    <p>現在のホバー地域: <span id="debug-hover">なし</span></p>
+                    <p>選択された地域: <span id="debug-selected">なし</span></p>
+                    <p>マウス座標: <span id="debug-coords">x: 0, y: 0</span></p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="regions.js"></script>
+    <script src="interactive-map-test.js"></script>
+</body>
+</html>
