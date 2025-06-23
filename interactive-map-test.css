@@ -75,11 +75,11 @@ header p {
     justify-content: center;
     margin: 0 auto;
     max-width: 600px;
-    background: white;
-    border: 3px solid #e9ecef;
+    background: #f8f9fa;
+    border: 3px solid transparent;
     border-radius: 15px;
     padding: 20px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    box-shadow: none;
     overflow: hidden;
 }
 
