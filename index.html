@@ -23,24 +23,280 @@
             </div>
 
             <section class="form-section">
-                <h2>地域を選択してください</h2>
-                <div class="form-group">
-                    <label for="region">地域 (Region)</label>
+                <!-- インタラクティブ地図セクション -->
+                <section class="interactive-map-section">
+                    <h2>地域を選択してください</h2>
+                    <p class="map-instruction">地図上の地域にマウスを合わせると、その地方がハイライトされます。クリックして選択してください。</p>
+                    
+                    <!-- 地図コンテナ -->
+                    <div class="map-container">
+                        <!-- ベース地図 -->
+                        <div class="base-map">
+                            <img src="日本地図/全体.png" alt="日本地図" class="base-map-image" id="base-map-image">
+                        </div>
+                        
+                        <!-- クリック可能なエリア（超小範囲円形） -->
+                        <div class="clickable-areas">
+                            <!-- 北海道地方 -->
+                            <div class="region-area circle-area hokkaido" 
+                                 data-region="Hokkaido" 
+                                 data-image="日本地図/北海道地方.png"
+                                 data-name="北海道地方"
+                                 style="top: 20%; left: 77%; width: 5%; height: 5%;"></div>
+                            
+                            <!-- 東北地方 -->
+                            <div class="region-area circle-area tohoku" 
+                                 data-region="Tohoku" 
+                                 data-image="日本地図/東北地方.png"
+                                 data-name="東北地方"
+                                 style="top: 45%; left: 69%; width: 5%; height: 5%;"></div>
+                            
+                            <!-- 関東地方 -->
+                            <div class="region-area circle-area kanto" 
+                                 data-region="Kanto" 
+                                 data-image="日本地図/関東地方.png"
+                                 data-name="関東地方"
+                                 style="top: 63%; left: 62%; width: 5%; height: 5%;"></div>
+                            
+                            <!-- 中部地方 -->
+                            <div class="region-area circle-area chubu" 
+                                 data-region="Chubu" 
+                                 data-image="日本地図/中部地方.png"
+                                 data-name="中部地方"
+                                 style="top: 62%; left: 51%; width: 5%; height: 5%;"></div>
+                            
+                            <!-- 近畿地方 -->
+                            <div class="region-area circle-area kinki" 
+                                 data-region="Kinki" 
+                                 data-image="日本地図/近畿地方.png"
+                                 data-name="近畿地方"
+                                 style="top: 67%; left: 42%; width: 5%; height: 5%;"></div>
+                            
+                            <!-- 中国地方 -->
+                            <div class="region-area circle-area chugoku" 
+                                 data-region="Chugoku" 
+                                 data-image="日本地図/中国地方.png"
+                                 data-name="中国地方"
+                                 style="top: 61%; left: 31%; width: 5%; height: 5%;"></div>
+                            
+                            <!-- 四国地方 -->
+                            <div class="region-area circle-area shikoku" 
+                                 data-region="Shikoku" 
+                                 data-image="日本地図/四国地方.png"
+                                 data-name="四国地方"
+                                 style="top: 71%; left: 31%; width: 5%; height: 5%;"></div>
+                            
+                            <!-- 九州・沖縄地方 -->
+                            <div class="region-area circle-area kyushu" 
+                                 data-region="Kyushu" 
+                                 data-image="日本地図/九州地方.png"
+                                 data-name="九州・沖縄地方"
+                                 style="top: 73%; left: 20%; width: 5%; height: 5%;"></div>
+                        </div>
+                        
+                        <!-- ホバー情報表示 -->
+                        <div class="hover-info" id="hover-info">
+                            <span id="region-name">地域名</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 都道府県選択 -->
+                <section class="prefecture-list-section">
+                    <h3>都道府県を選択してください</h3>
+                    <p class="prefecture-instruction">関東地方の都道府県から選択してください</p>
+                    
+                    <!-- PC版: ナビゲーションボタン -->
+                    <div class="nav-controls">
+                        <button class="nav-btn nav-btn-left" id="prefecture-scroll-left">‹</button>
+                        <button class="nav-btn nav-btn-right" id="prefecture-scroll-right">›</button>
+                    </div>
+
+                    <!-- 都道府県リスト -->
+                    <div class="prefecture-scroll-container" id="prefecture-scroll-container">
+                        <ul class="prefecture_list">
+                            <!-- 東京都 -->
+                            <li class="prefecture_list__item o-card o-card--shadow-light" data-prefecture="tokyo" data-name="東京都">
+                                <div class="prefecture_list__item__image_wrap">
+                                    <figure class="image image--ratio image--ratio-3-2">
+                                        <div class="image__mask">
+                                            <img class="image__img" src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="東京都">
+                                        </div>
+                                    </figure>
+                                </div>
+                                
+                                <div class="prefecture_list__item__text_wrap">
+                                    <div class="prefecture_list__item__text">
+                                        <div class="prefecture_list__item__main_info">
+                                            <a class="prefecture_list__item__name" href="#">
+                                                東京都
+                                            </a>
+                                            <div class="prefecture_list__item__desc s-typography--links">浅草寺、東京タワー、スカイツリー</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- 神奈川県 -->
+                            <li class="prefecture_list__item o-card o-card--shadow-light" data-prefecture="kanagawa" data-name="神奈川県">
+                                <div class="prefecture_list__item__image_wrap">
+                                    <figure class="image image--ratio image--ratio-3-2">
+                                        <div class="image__mask">
+                                            <img class="image__img" src="https://images.unsplash.com/photo-1605296867304-46d5465a13f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="神奈川県">
+                                        </div>
+                                    </figure>
+                                </div>
+                                
+                                <div class="prefecture_list__item__text_wrap">
+                                    <div class="prefecture_list__item__text">
+                                        <div class="prefecture_list__item__main_info">
+                                            <a class="prefecture_list__item__name" href="#">
+                                                神奈川県
+                                            </a>
+                                            <div class="prefecture_list__item__desc s-typography--links">鎌倉、横浜中華街、箱根</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- 千葉県 -->
+                            <li class="prefecture_list__item o-card o-card--shadow-light" data-prefecture="chiba" data-name="千葉県">
+                                <div class="prefecture_list__item__image_wrap">
+                                    <figure class="image image--ratio image--ratio-3-2">
+                                        <div class="image__mask">
+                                            <img class="image__img" src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="千葉県">
+                                        </div>
+                                    </figure>
+                                </div>
+                                
+                                <div class="prefecture_list__item__text_wrap">
+                                    <div class="prefecture_list__item__text">
+                                        <div class="prefecture_list__item__main_info">
+                                            <a class="prefecture_list__item__name" href="#">
+                                                千葉県
+                                            </a>
+                                            <div class="prefecture_list__item__desc s-typography--links">成田空港、ディズニーランド、鴨川</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- 埼玉県 -->
+                            <li class="prefecture_list__item o-card o-card--shadow-light" data-prefecture="saitama" data-name="埼玉県">
+                                <div class="prefecture_list__item__image_wrap">
+                                    <figure class="image image--ratio image--ratio-3-2">
+                                        <div class="image__mask">
+                                            <img class="image__img" src="https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="埼玉県">
+                                        </div>
+                                    </figure>
+                                </div>
+                                
+                                <div class="prefecture_list__item__text_wrap">
+                                    <div class="prefecture_list__item__text">
+                                        <div class="prefecture_list__item__main_info">
+                                            <a class="prefecture_list__item__name" href="#">
+                                                埼玉県
+                                            </a>
+                                            <div class="prefecture_list__item__desc s-typography--links">川越、小江戸、秩父</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- 茨城県 -->
+                            <li class="prefecture_list__item o-card o-card--shadow-light" data-prefecture="ibaraki" data-name="茨城県">
+                                <div class="prefecture_list__item__image_wrap">
+                                    <figure class="image image--ratio image--ratio-3-2">
+                                        <div class="image__mask">
+                                            <img class="image__img" src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="茨城県">
+                                        </div>
+                                    </figure>
+                                </div>
+                                
+                                <div class="prefecture_list__item__text_wrap">
+                                    <div class="prefecture_list__item__text">
+                                        <div class="prefecture_list__item__main_info">
+                                            <a class="prefecture_list__item__name" href="#">
+                                                茨城県
+                                            </a>
+                                            <div class="prefecture_list__item__desc s-typography--links">大洗、ひたち海浜公園、袋田の滝</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- 栃木県 -->
+                            <li class="prefecture_list__item o-card o-card--shadow-light" data-prefecture="tochigi" data-name="栃木県">
+                                <div class="prefecture_list__item__image_wrap">
+                                    <figure class="image image--ratio image--ratio-3-2">
+                                        <div class="image__mask">
+                                            <img class="image__img" src="https://images.unsplash.com/photo-1605883705077-8d3d3cebe78c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="栃木県">
+                                        </div>
+                                    </figure>
+                                </div>
+                                
+                                <div class="prefecture_list__item__text_wrap">
+                                    <div class="prefecture_list__item__text">
+                                        <div class="prefecture_list__item__main_info">
+                                            <a class="prefecture_list__item__name" href="#">
+                                                栃木県
+                                            </a>
+                                            <div class="prefecture_list__item__desc s-typography--links">日光東照宮、華厳滝、那須</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- 群馬県 -->
+                            <li class="prefecture_list__item o-card o-card--shadow-light" data-prefecture="gunma" data-name="群馬県">
+                                <div class="prefecture_list__item__image_wrap">
+                                    <figure class="image image--ratio image--ratio-3-2">
+                                        <div class="image__mask">
+                                            <img class="image__img" src="https://images.unsplash.com/photo-1551726899-1d5e38c6e014?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="群馬県">
+                                        </div>
+                                    </figure>
+                                </div>
+                                
+                                <div class="prefecture_list__item__text_wrap">
+                                    <div class="prefecture_list__item__text">
+                                        <div class="prefecture_list__item__main_info">
+                                            <a class="prefecture_list__item__name" href="#">
+                                                群馬県
+                                            </a>
+                                            <div class="prefecture_list__item__desc s-typography--links">草津温泉、富岡製糸場、尾瀬</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- 選択された都道府県の情報表示 -->
+                    <div class="prefecture-selection-info">
+                        <h4>選択された都道府県</h4>
+                        <div id="selected-prefecture-info">
+                            <p id="selected-prefecture-display">まだ都道府県が選択されていません</p>
+                            <div id="selected-prefecture-details" style="display: none;">
+                                <h5 id="selected-prefecture-title"></h5>
+                                <div id="selected-prefecture-data">
+                                    <p>選択されたエリア: <span id="prefecture-name-display"></span></p>
+                                    <p>主要観光地: <span id="attractions-display"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- 隠しフィールド（既存のフォーム機能との互換性） -->
+                <div style="display: none;">
                     <select id="region" name="region">
                         <option value="">選択してください</option>
                     </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="prefecture">都道府県 (Prefecture)</label>
-                    <select id="prefecture" name="prefecture" disabled>
+                    <select id="prefecture" name="prefecture">
                         <option value="">地域を選択してください</option>
                     </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="city">市区町村 (City)</label>
-                    <select id="city" name="city" disabled>
+                    <select id="city" name="city">
                         <option value="">都道府県を選択してください</option>
                     </select>
                 </div>
@@ -237,6 +493,8 @@
 
     <script src="config.js"></script>
     <script src="regions.js"></script>
+    <script src="interactive-map-test.js"></script>
+    <script src="prefecture-cards-final.js"></script>
     <script src="maps.js"></script>
     <script src="script.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA80IAlN1T4X418R1-k0zvjeU1w3q2RDTY&libraries=places&callback=initializeGoogleMaps"></script>
