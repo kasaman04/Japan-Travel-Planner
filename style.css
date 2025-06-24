@@ -960,31 +960,14 @@ footer {
     opacity: 0.6;
 }
 
-/* Prefecture Selection Styles - prefecture-cards-final.html仕様 */
+/* Prefecture Selection Styles - Same as Activity Section */
 .prefecture-list-section {
     background: #f8f9fa;
-    padding: 30px 20px;
+    padding: 30px;
     border-radius: 15px;
     margin-bottom: 30px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     position: relative;
-    overflow: hidden;
-}
-
-.prefecture-list-section h3 {
-    color: #333;
-    margin-bottom: 10px;
-    font-size: 1.6rem;
-    border-left: 4px solid #667eea;
-    padding-left: 15px;
-    font-weight: 600;
-}
-
-.prefecture-instruction {
-    color: #666;
-    margin-bottom: 25px;
-    margin-left: 19px;
-    font-style: italic;
 }
 
 /* PC版: Prefecture Navigation Controls */
@@ -1001,7 +984,7 @@ footer {
 /* Prefecture Navigation Buttons */
 .prefecture-list-section .nav-btn {
     position: absolute;
-    background: rgba(102, 126, 234, 0.9);
+    background: rgba(37, 99, 235, 0.9);
     border: none;
     border-radius: 50%;
     width: 50px;
@@ -1014,7 +997,7 @@ footer {
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
     pointer-events: auto;
 }
 
@@ -1027,9 +1010,9 @@ footer {
 }
 
 .prefecture-list-section .nav-btn:hover {
-    background: rgba(102, 126, 234, 1);
+    background: rgba(37, 99, 235, 1);
     transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
 }
 
 .prefecture-list-section .nav-btn:disabled {
@@ -1058,7 +1041,6 @@ footer {
     margin: 0;
     display: flex;
     gap: 20px;
-    min-width: fit-content;
 }
 
 /* Prefecture Card Base */
@@ -1419,5 +1401,6 @@ footer {
     
     .prefecture_list__item {
         width: 100%;
+        margin-bottom: 12px;
     }
 }
